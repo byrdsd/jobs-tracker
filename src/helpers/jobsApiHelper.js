@@ -20,7 +20,7 @@ const getJob = async (id) => {
 
 const createJob = async (jobDetails) => {
   try {
-    const response = await fetch(`${STUB_API}/jobs/create`, {
+    const response = await fetch(`${STUB_API}/jobs/`, {
       method: 'POST',
       mode: 'cors',
       cache: 'no-cache',
@@ -37,7 +37,7 @@ const createJob = async (jobDetails) => {
 
 const updateJob = async (jobDetails) => {
   try {
-    const response = await fetch(`${STUB_API}/jobs/update/${jobDetails.id}`, {
+    const response = await fetch(`${STUB_API}/jobs/${jobDetails.id}`, {
       method: 'PATCH',
       mode: 'cors',
       cache: 'no-cache',
@@ -54,7 +54,7 @@ const updateJob = async (jobDetails) => {
 
 const destroyJob = async (id) => {
   try {
-    const response = await fetch(`${STUB_API}/jobs/delete/${id}`, {
+    const response = await fetch(`${STUB_API}/jobs/${id}`, {
       method: 'DELETE',
       mode: 'cors',
       cache: 'no-cache',

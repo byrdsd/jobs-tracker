@@ -14,7 +14,7 @@
     <button v-on:click="editView(job)" class="ShowJob-control">
       Edit
     </button>
-    <button class="ShowJob-control">
+    <button @click="$emit('delete', job)" class="ShowJob-control">
       Delete
     </button>
   </div>
