@@ -60,7 +60,6 @@ export default {
   },
   mounted: async function () {
     await this.updateJobs();
-    this.countVisibleJobs();
   },
   methods: {
     updateJobs: async function () {
@@ -90,9 +89,6 @@ export default {
       await destroyJob(job.id).then(() => {
         this.updateJobs();
       })
-    },
-    countVisibleJobs: function () {
-
     }
   }
 }

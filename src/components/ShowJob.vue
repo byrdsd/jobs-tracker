@@ -16,7 +16,7 @@
     <button v-on:click="editView(job)" class="JobsTracker-button">
       Edit
     </button>
-    <button @click="$emit('delete-requested', job)" class="JobsTracker-button JobsTracker-button--danger">
+    <button @click="$emit('job-deleted', job)" class="JobsTracker-button JobsTracker-button--danger">
       Delete
     </button>
   </div>
@@ -36,7 +36,7 @@ export default {
       if (!this.$attrs.filter) {
         return true
       }
-      const filterRegex = new RegExp(this.$attrs.filter);
+      const filterRegex = new RegExp(this.$attrs.filter, 'i');
       return this.job.skills.filter((skill) => {
         return filterRegex.test(skill);
       }).length;
