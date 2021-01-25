@@ -5,20 +5,16 @@
 yarn install
 ```
 
+### Starts mock DB serve using json-serve
+```
+yarn db
+```
+
 ### Compiles and hot-reloads for development
 ```
 yarn serve
 ```
 
-### Compiles and minifies for production
-```
-yarn build
-```
+## Details
 
-### Lints and fixes files
-```
-yarn lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+Take a look at the design doc [here](https://github.com/byrdsd/jobs-tracker/issues/1) for the rough build plan. This is built mostly from the spec provided for the project.
