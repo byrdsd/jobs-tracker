@@ -1,23 +1,30 @@
 <template>
   <main class="JobsIndex">
     <h1>See All Jobs</h1>
-    <form class="JobsIndex-filter" id="job-filters">
+    <div class="JobsIndex-filter" id="job-filters">
       <label class="JobsIndex-label" for="skill-filter">Filter By Skills</label>
-      <input class="JobsIndex-input" id="skill-filter" name="skill-filter" type="text">
-    </form>
-    <button @click="newJob">Create Job</button>
+      <input v-model="filter" class="JobsTracker-input" id="skill-filter" name="skill-filter" type="text">
+      <p class="JobsIndex-filteredMessage" v-if="filtered.visible < filtered.total">
+        Filtering on skills, showing {{ filtered.visible }} of {{ filtered.total }}.
+      </p>
+    </div>
+    <button @click="newJob" class="JobsTracker-button JobsIndex-new">Create Job</button>
     <component
       v-for="job in jobs"
       v-bind:key="job.id"
       v-bind:job="job"
       v-bind:is="job.view"
-      @job-saved="saveJob"
-      @delete="deleteJob">
+      v-bind:filter="filter"
+      ref="showJobs"
+      @job-updated="saveJob"
+      @job-deleted="deleteJob"
+      @update-requested="updateJobs">
     </component>
     <div v-if="showModal" class="JobsIndex-modal">
       <EditJob
-        @cancel="closeModal"
-        @job-saved="saveJob" />
+        @form-closed="closeModal"
+        @job-updated="saveJob"
+        @update-requested="updateJobs" />
     </div>
   </main>
 </template>
@@ -35,11 +42,25 @@ export default {
   data: function () {
     return {
       jobs: [],
-      showModal: false
+      showModal: false,
+      filter: '',
+      filtered: {}
+    }
+  },
+  watch: {
+    filter: function () {
+      this.$nextTick(function () {
+        const visibleJobs = this.$el.querySelectorAll('.ShowJob');
+        this.filtered = {
+          visible: visibleJobs.length,
+          total: this.$refs.showJobs.length
+        }
+      })
     }
   },
   mounted: async function () {
     await this.updateJobs();
+    this.countVisibleJobs();
   },
   methods: {
     updateJobs: async function () {
@@ -66,10 +87,12 @@ export default {
         });
     },
     deleteJob: async function (job) {
-      await destroyJob(job.id)
-        .then(() => {
-          this.updateJobs();
-        })
+      await destroyJob(job.id).then(() => {
+        this.updateJobs();
+      })
+    },
+    countVisibleJobs: function () {
+
     }
   }
 }
@@ -82,16 +105,36 @@ export default {
       font-weight: 600;
     }
 
+    &-filter {
+      margin-bottom: 8px;
+    }
+
+    &-new {
+      margin-bottom: 32px;
+    }
+
     &-modal {
       position: absolute;
-      background-color: #fff;
       top: 100px;
       left: 0;
       right: 0;
-      width: 80%;
+      max-width: 1000px;
       margin: auto;
-      box-shadow: 0 4px 16px rgba(0,0,0,.3);
       padding: 20px;
+      z-index: 1;
+
+      &::before {
+        content: '';
+        display: block;
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: #000;
+        opacity: 0.3;
+        z-index: -1;
+      }
     }
   }  
 </style>

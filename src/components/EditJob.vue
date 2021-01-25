@@ -1,20 +1,31 @@
 <template>
-  <form class="EditJob" @submit.prevent>
-    <div class="EditJob-control">
-      <label class="EditJob-label" for="title">Job Title</label>
-      <input v-model="jobData.title" type="text" class="EditJob-input" name="title">
+  <form class="EditJob" @submit.prevent="submitForm()">
+    <div class="JobsTracker-control JobsTracker-control--l">
+      <label class="JobsTracker-label" for="title">Job Title</label>
+      <input v-model="jobData.title" type="text" class="JobsTracker-input" name="title">
     </div>
-    <div class="EditJob-control">
-      <label class="EditJob-label" for="descripiton">Job Description</label>
-      <input v-model="jobData.description" type="text" class="EditJob-input" name="description">
+    <div class="JobsTracker-control JobsTracker-control--l">
+      <label class="JobsTracker-label" for="descripiton">Job Description</label>
+      <textarea v-model="jobData.description" class="JobsTracker-input" name="description"></textarea>
     </div>
-    <div class="EditJob-control">
-      <label class="EditJob-label" for="skills">Skills</label>
-      <input v-for="(skill, index) in jobData.skills" v-bind:key="index" v-model="jobData.skills[index]" type="text" class="EditJob-input" name="skills">
-      <input v-model.lazy="jobData.skills[jobData.skills.length]" type="text" class="EditJobs-input" name="skills">
+    <div class="JobsTracker-control">
+      <label class="JobsTracker-label" for="skills">Skills</label>
+      <input v-for="(skill, index) in jobData.skills"
+             v-bind:key="index"
+             v-model="jobData.skills[index]"
+             v-on:keydown.enter.prevent
+             v-on:change="clearEmptySkills()"
+             type="text"
+             class="JobsTracker-input"
+             name="skills">
+      <input v-on:keydown.enter.prevent="addSkill($event)"
+             type="text"
+             class="JobsTracker-input"
+             name="skills"
+             placeholder="Add new skill">
     </div>
-    <input type="submit" class="EditJob-submit" value="Save" @click="submitForm()">
-    <button class="EditJob-close" @click="closeForm()" type="button">Cancel</button>
+    <input type="submit" class="JobsTracker-button" value="Save">
+    <button class="JobsTracker-button" @click="closeForm()" type="button">Cancel</button>
   </form>
 </template>
 
@@ -46,14 +57,30 @@ export default {
   methods: {
     closeForm: function () {
       this.job.view = 'ShowJob';
-      this.$emit('cancel')
+      this.$emit('update-requested');
+      this.$emit('form-closed')
     },
     submitForm: function () {
-      this.$emit('job-saved', this.jobData);
+      this.$emit('job-updated', this.jobData);
+    },
+    addSkill: function ($event) {
+      this.jobData.skills.push($event.target.value);
+      $event.target.value = '';
+    },
+    clearEmptySkills: function () {
+      this.jobData.skills = this.jobData.skills.filter((skill) => {
+        return skill;
+      })
     }
   }
 }
 </script>
 
-<style scoped lang="scss">
+<style lang="scss">
+  .EditJob {
+    background-color: #fff;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 8px #888;
+  }
 </style>
